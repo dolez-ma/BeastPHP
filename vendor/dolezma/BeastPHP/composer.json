@@ -1,0 +1,20 @@
+{
+	"name": "dolezma/beastphp",
+	"type": "framework",
+	"description": "Beast is a PHP framework",
+	"licence": "MIT",
+	"authors": [
+		{
+			"name": "Matthieu Dolez"
+		}
+	],
+	"require": {
+		"php": ">=5.6"
+	},
+	"autoload": {
+		"psr-4": {
+			"BeastPHP\\": "src/"
+		}
+	},
+	"bin": ["src/beastphp"]
+}
