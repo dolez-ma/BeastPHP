@@ -33,6 +33,15 @@ class Url
         return $this->baseurl;
     }
 
+    /**
+     *
+     */
+    public function getActualUrl(){
+        return isset($_GET['url']) ? $_GET['url'] : '/';
+    }
+
+
+
 
 
 

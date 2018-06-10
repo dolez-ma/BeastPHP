@@ -68,4 +68,32 @@ class Configuration
             $this->configuration = array_merge($this->configuration, $configClass->getValues());
         }
     }
+
+    /**
+     * @param string $configParam
+     * @return mixed|null
+     */
+    public function get(string $configParam){
+        if(strpos($configParam, '.') !== false){
+            return $this->getNested($this->configuration, explode('.', $configParam));
+        }
+        if(isset($this->configuration[$configParam])){
+            return $this->configuration[$configParam];
+        }
+        return null;
+    }
+
+    /**
+     * @param $config
+     * @param $configParams
+     * @return mixed
+     */
+    public function getNested(&$configuration, $configParams){
+        foreach ($configParams as $configParam){
+            $configuration = &$configuration[$configParam];
+        }
+        return $configuration;
+    }
+
+
 }

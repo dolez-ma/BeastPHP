@@ -21,6 +21,7 @@ class Route
     protected $callable;
     protected $template;
     protected $parameters = [];
+    protected $values = [];
     protected $request;
 
     public function __construct(Request $request, array $data){
@@ -50,6 +51,66 @@ class Route
             }
         }
         return $this;
+    }
+
+    public function matchDirectly($url){
+        if(!$this->isAllowedRequestMethod()){
+            return false;
+        }
+
+        if($this->url === $url){
+            return true;
+        }
+        return false;
+    }
+
+    public function matchWithParams($url){
+        if(!$this->parameters || !$this->isAllowedRequestMethod() || !$this->isPartCountSame($url) || !$this->hasParameters()){
+            return false;
+        }
+
+        $this->extractParamValues($url);
+        if(!$this->values){
+            return false;
+        }
+
+        $fixedUrl = $this->injectParams($url);
+        if($this->matchDirectly($fixedUrl)){
+            return true;
+        }
+        return false;
+    }
+
+    public function isAllowedRequestMethod(){
+        return in_array($this->request->getMethod(), $this->methods);
+    }
+
+    public function isPartCountSame($url){
+        return count(explode('/', $url)) === count(explode('/', $this->url));
+    }
+
+    public function hasParameters(){
+        return mb_strpos($this->url, '{') && mb_strpos($this->url, '}');
+    }
+
+    public function extractParamValues($url){
+        $urlParts = explode('/', $url);
+        $this->values = [];
+        foreach ($this->parameters as $index => $name){
+            $this->values[$name] = $urlParts[$index];
+        }
+        return $this->values;
+    }
+
+    public function injectParams($url){
+        $urlParts = explode('/', $url);
+        $parameters = array_flip($this->values);
+        foreach ($urlParts as &$urlPart){
+            if(isset($parameters[$urlPart])){
+                $urlPart = '{' . ltrim($parameters[$urlPart], '{}') . '}';
+            }
+        }
+        return implode('/', $urlParts);
     }
 
 

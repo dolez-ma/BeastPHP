@@ -1,15 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Boudha
- * Date: 09/06/2018
- * Time: 18:16
- */
 
 namespace BeastPHP\Framework;
 
 
 use BeastPHP\DependencyInjection\Container;
+use BeastPHP\Events\EventManager;
 use BeastPHP\Files\Path;
 use BeastPHP\Http\Url;
 use BeastPHP\Route\Router;
@@ -23,24 +18,38 @@ class Beast
     /** @var Configuration $configuration */
     protected $configuration;
 
-    /** @var   */
+    /** @var EventManager $eventManager */
+    protected $eventManager;
+
+    /** @var Router $router */
     protected $router;
 
     /** @var Url $url */
     protected $url;
 
     public function __construct(
-        Path $path,
+        Path          $path,
         Configuration $configuration,
-        Router $router,
-        Url $url
-
+        EventManager  $eventManager,
+        Router        $router,
+        Url           $url
     ){
-        $this->path = $path;
+        $this->path          = $path;
         $this->configuration = $configuration;
-        $this->router = $router;
-        $this->url = $url;
+        $this->eventManager  = $eventManager;
+        $this->router        = $router;
+        $this->url           = $url;
     }
+
+    /**
+     * @return EventManager
+     */
+    public function getEventManager(){ return $this->eventManager; }
+
+    /**
+     * @param EventManager $eventManager
+     */
+    public function setEventManager($eventManager){ $this->eventManager = $eventManager; }
 
     /**
      * @return mixed
@@ -98,7 +107,34 @@ class Beast
         // Load all routes
         $this->loadRoutes();
 
-        // TODO [MDO]
+        // Get the actual url
+        $actualUrl = $this->url->getActualUrl();
+
+        // Load the database configuration
+        if($this->configuration->get('database.type')){
+            $this->database->setConfiguration($this->configuration->get('database'));
+        }
+
+        // Load initial params defined in the configuration files
+        if($this->configuration->get('initLocations')){
+            $this->loadInitialParams();
+        }
+
+        // Match the routes if possible
+        $this->eventManager->trigger('beast_route_match_before', $actualUrl);
+        $route = $this->router->matchActualRoute();
+        $this->eventManager->trigger('beast_route_match_after', $route);
+        if($route){
+            $this->eventManager->trigger('beast_http_ok', $route);
+            // $this->dispatcher->dispatch($route);
+        } else {
+            // $this->response->setHttpCode(404);
+            $this->eventManager->trigger('beast_http_not_found', $actualUrl);
+        }
+
+        $this->eventManager->trigger('beast_response_send');
+        // $this->response->send();
+        return $this;
     }
 
     protected function loadRoutes(){
@@ -106,5 +142,36 @@ class Beast
             $this->router->addRoute($name, $route);
         }
         return $this;
+    }
+
+    protected function loadInitialParams(){
+        $locations = $this->configuration->get('initLocations');
+
+        if(!is_array($locations)){
+            return;
+        }
+
+
+        foreach ($locations as $location) {
+            $folder = $this->path->getPath($location);
+
+            if(!file_exists($folder)){
+                continue;
+            }
+
+            $folderIterator = new \RecursiveDirectoryIterator($folder, \RecursiveDirectoryIterator::SKIP_DOTS);
+            $iteratorIterator = new \RecursiveIteratorIterator($folderIterator);
+
+            foreach ($iteratorIterator as $file){
+                if($file->getExtension() !== 'php'){
+                    continue;
+                }
+
+                $className = '\\init\\' . str_replace('.' . $file->getExension(), '', $file->getFilename());
+                Container::create($className);
+            }
+        }
+
+
     }
 }
