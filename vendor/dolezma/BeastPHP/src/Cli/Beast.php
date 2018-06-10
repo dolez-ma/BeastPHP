@@ -9,7 +9,7 @@
 namespace BeastPHP\Cli;
 
 
-class Application
+class Beast
 {
 
 }
