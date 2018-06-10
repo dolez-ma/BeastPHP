@@ -15,7 +15,7 @@ use BeastPHP\Http\Url;
 use BeastPHP\Route\Router;
 use Routes;
 
-class Application
+class Beast
 {
     /** @var Path $path */
     protected $path;
@@ -84,7 +84,7 @@ class Application
 
 
 
-    public function run(){
+    public function wakeUp(){
 
         // Define the base path for paths
         $this->path->setBasepath(BASEPATH);
@@ -102,7 +102,7 @@ class Application
     }
 
     protected function loadRoutes(){
-        foreach (Container::get(\Routes::class)->get() as $name => $route){
+        foreach (Container::get(Routes::class)->get() as $name => $route){
             $this->router->addRoute($name, $route);
         }
         return $this;
