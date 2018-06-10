@@ -25,7 +25,7 @@ $autoLoader->addLocation(BASEPATH . SEP . 'app');
 $autoLoader->register();
 
 if(PHP_SAPI === 'cli'){
-    return \BeastPHP\DependencyInjection\Container::get(\BeastPHP\Cli\Application::class);
+    return \BeastPHP\DependencyInjection\Container::get(\BeastPHP\Cli\Beast::class);
 }
 
-return \BeastPHP\DependencyInjection\Container::get(\BeastPHP\Framework\Application::class);
+return \BeastPHP\DependencyInjection\Container::get(\BeastPHP\Framework\Beast::class);

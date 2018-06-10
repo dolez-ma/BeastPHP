@@ -7,9 +7,9 @@
 
 ini_set('display_errors', '1');
 
-$app = require_once(__DIR__ . '/../vendor/dolezma/BeastPHP/src/Framework/Bootstrap.php');
+$beast = require_once(__DIR__ . '/../vendor/dolezma/BeastPHP/src/Framework/Bootstrap.php');
 
-$app->run();
+$beast->wakeUp();
 
-echo $app->getConfiguration()->getPath()->getBasepath() . '<br />';
-echo $app->getUrl()->getBaseurl();
+echo $beast->getConfiguration()->getPath()->getBasepath() . '<br />';
+echo $beast->getUrl()->getBaseurl();

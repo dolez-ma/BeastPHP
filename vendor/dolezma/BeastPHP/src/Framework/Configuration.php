@@ -18,7 +18,7 @@ class Configuration
 {
     protected $path;
 
-    protected $config = [];
+    protected $configuration = [];
 
     public function __construct(Path $path){
         $this->path = $path;
@@ -50,7 +50,7 @@ class Configuration
         foreach ($iteratorIterator as $file){
             $className = 'Configuration\\' . str_replace('.php', '', $file->getFilename());
 
-            if($className === 'Application'){
+            if($className === 'Beast'){
                 continue;
             }
 
@@ -65,7 +65,7 @@ class Configuration
         ksort($configClasses);
 
         foreach ($configClasses as $configClass){
-            $this->config = array_merge($this->config, $configClass->getValues());
+            $this->configuration = array_merge($this->configuration, $configClass->getValues());
         }
     }
 }

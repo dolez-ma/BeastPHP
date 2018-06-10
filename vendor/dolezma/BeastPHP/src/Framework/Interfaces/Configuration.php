@@ -9,7 +9,7 @@
 namespace BeastPHP\Framework\Interfaces;
 
 
-interface Config
+interface Configuration
 {
     public function getSortOrder();
     public function getValues();
