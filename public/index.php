@@ -13,3 +13,7 @@ $beast->wakeUp();
 
 echo $beast->getConfiguration()->getPath()->getBasepath() . '<br />';
 echo $beast->getUrl()->getBaseurl();
+
+
+$array = \Yosymfony\Toml\Toml::parseFile(__DIR__ . SEP . '..' . SEP . 'app' . SEP . 'Configuration' . SEP . 'beast.toml');
+print_r($array);

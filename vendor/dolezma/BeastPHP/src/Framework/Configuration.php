@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Boudha
- * Date: 09/06/2018
- * Time: 23:26
+ * @package Beast
+ * @licence MIT
+ * @author dolezma
  */
 
 namespace BeastPHP\Framework;
@@ -13,6 +12,7 @@ use BeastPHP\DependencyInjection\Container;
 use BeastPHP\Files\Path;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Yosymfony\Toml\Toml;
 
 class Configuration
 {
@@ -48,11 +48,32 @@ class Configuration
 
         $configClasses = [];
         foreach ($iteratorIterator as $file){
-            $className = 'Configuration\\' . str_replace('.php', '', $file->getFilename());
 
-            if($className === 'Beast'){
+            if ($file->getExtension() !== 'toml') {
                 continue;
             }
+
+            $array = Toml::parseFile($file->getPath() . SEP . $file->getFilename());
+
+
+            if($file->getFilename() === 'beast.toml'){
+                continue;
+            }
+
+            if(!isset($array['sortOrder']) || $array['sortOrder'] === null){
+                array_push($configClasses, $array['values']);
+            } else {
+                $configClasses[$array['sortOrder']] = $array['values'];
+            }
+
+            /*
+
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $className = 'Configuration\\' . str_replace('.php', '', $file->getFilename());
+
 
             $configClass = Container::get($className);
             if($configClass->getSortOrder() === null){
@@ -60,13 +81,16 @@ class Configuration
             } else {
                 $configClasses[$configClass->getSortOrder()] = $configClass;
             }
+            */
+
         }
 
         ksort($configClasses);
 
         foreach ($configClasses as $configClass){
-            $this->configuration = array_merge($this->configuration, $configClass->getValues());
+            $this->configuration = array_merge($this->configuration, $configClass);
         }
+        var_dump($this->configuration);
     }
 
     /**

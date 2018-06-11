@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @package Beast
+ * @licence MIT
+ * @author dolezma
+ */
 namespace BeastPHP\Framework;
 
 

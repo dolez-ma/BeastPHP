@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Boudha
- * Date: 10/06/2018
- * Time: 03:52
+ * @package Beast
+ * @licence MIT
+ * @author dolezma
  */
 
 namespace BeastPHP\Route;

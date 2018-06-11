@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Boudha
- * Date: 09/06/2018
- * Time: 23:16
+ * @package Beast
+ * @licence MIT
+ * @author dolezma
  */
 
 namespace BeastPHP\Files;

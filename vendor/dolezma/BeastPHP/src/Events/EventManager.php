@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Boudha
- * Date: 11/06/2018
- * Time: 00:01
+ * @package Beast
+ * @licence MIT
+ * @author dolezma
  */
 
 namespace BeastPHP\Events;
