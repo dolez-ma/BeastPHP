@@ -10,3 +10,7 @@ autoEnable = true
 initLocations = [
       'app/Init'
 ]
+
+
+[language]
+locale = "fr-FR"

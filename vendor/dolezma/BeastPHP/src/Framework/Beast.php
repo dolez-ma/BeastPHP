@@ -12,7 +12,9 @@ use BeastPHP\Events\EventManager;
 use BeastPHP\Files\Path;
 use BeastPHP\Http\Url;
 use BeastPHP\Route\Router;
-use Routes;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use Yosymfony\Toml\Toml;
 
 class Beast
 {
@@ -21,6 +23,8 @@ class Beast
 
     /** @var Configuration $configuration */
     protected $configuration;
+
+    protected $dispatcher;
 
     /** @var EventManager $eventManager */
     protected $eventManager;
@@ -34,6 +38,7 @@ class Beast
     public function __construct(
         Path          $path,
         Configuration $configuration,
+        Dispatcher    $dispatcher,
         EventManager  $eventManager,
         Router        $router,
         Url           $url
@@ -130,7 +135,7 @@ class Beast
         $this->eventManager->trigger('beast_route_match_after', $route);
         if($route){
             $this->eventManager->trigger('beast_http_ok', $route);
-            // $this->dispatcher->dispatch($route);
+            $this->dispatcher->dispatch($route);
         } else {
             // $this->response->setHttpCode(404);
             $this->eventManager->trigger('beast_http_not_found', $actualUrl);
@@ -142,7 +147,9 @@ class Beast
     }
 
     protected function loadRoutes(){
-        foreach (Container::get(Routes::class)->get() as $name => $route){
+        $routes = Toml::parseFile(BASEPATH . SEP . 'app' . SEP . 'Routes.toml')['routes'];
+
+        foreach ($routes as $name => $route){
             $this->router->addRoute($name, $route);
         }
         return $this;
@@ -163,8 +170,8 @@ class Beast
                 continue;
             }
 
-            $folderIterator = new \RecursiveDirectoryIterator($folder, \RecursiveDirectoryIterator::SKIP_DOTS);
-            $iteratorIterator = new \RecursiveIteratorIterator($folderIterator);
+            $folderIterator = new RecursiveDirectoryIterator($folder, RecursiveDirectoryIterator::SKIP_DOTS);
+            $iteratorIterator = new RecursiveIteratorIterator($folderIterator);
 
             foreach ($iteratorIterator as $file){
                 if($file->getExtension() !== 'php'){

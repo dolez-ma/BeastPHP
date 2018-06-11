@@ -8,6 +8,7 @@
 namespace BeastPHP\DependencyInjection;
 
 
+use BeastPHP\Utility\Lang;
 use Exception;
 use ReflectionClass;
 
@@ -35,8 +36,7 @@ class Container
 
         // Check if there is a cyclic dependency with the parent class
         if($parentClassName && isset(self::$relations[$parentClassName]) && isset(self::$relations[$parentClassName][$className])){
-            $message = 'Dependance cyclique trouvée: ' . $className . ' dépend de ' . $parentClassName;
-            $message .= ' qui dépend elle même de ' . $className;
+            $message = sprintf(Lang::translate("exception:cyclic_dependency"), $className , $parentClassName, $className);
             throw new Exception($message);
         }
 

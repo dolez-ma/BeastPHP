@@ -1,0 +1,5 @@
+[routes.index]
+  methods = "GET"
+  url = "/"
+  controller = ""
+  action = "index"

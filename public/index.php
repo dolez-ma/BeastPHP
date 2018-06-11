@@ -16,4 +16,8 @@ echo $beast->getUrl()->getBaseurl();
 
 
 $array = \Yosymfony\Toml\Toml::parseFile(__DIR__ . SEP . '..' . SEP . 'app' . SEP . 'Configuration' . SEP . 'beast.toml');
+echo "<pre>";
 print_r($array);
+echo "</pre>";
+echo "<br />";
+echo sprintf(\BeastPHP\Utility\Lang::translate("exception:cyclic_dependency"), "test", "testParent", "test");
