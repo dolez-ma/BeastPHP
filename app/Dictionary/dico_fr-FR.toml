@@ -1,7 +1,0 @@
-[exception]
-offsetUnsetException = "Impossible de supprimer une quelconque valeur"
-varMustBeAStringException = "Le nom de la variable doit être une chaine de caractères non nulle"
-viewNotFound = "La vue n'existe pas"
-invalidView = "La vue spécifiée est invalide"
-bool_exception_auth = "La valeur spécifiée à la méthode HTTPSession::setAuthenticated() doit être un boolean"
-cyclic_dependency = "Dépendance cyclique trouvée: %s dépend de %s qui dépend elle-même de %s"
