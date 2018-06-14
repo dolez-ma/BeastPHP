@@ -9,7 +9,8 @@
 namespace BeastPHP\Core\Interfaces;
 
 
-interface HTTPRequestInterface {
+interface HTTPRequestInterface
+{
 
     public function getCookieValue(string $name);
 

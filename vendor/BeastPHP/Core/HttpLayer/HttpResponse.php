@@ -2,6 +2,7 @@
 
 namespace BeastPHP\Core\HttpLayer;
 
+use BeastPHP\Core\AppComponent;
 use BeastPHP\Core\Interfaces\HttpResponseInterface;
 use BeastPHP\Core\Page;
 
@@ -15,10 +16,83 @@ use BeastPHP\Core\Page;
  * @package BeastPHP\Core\HttpLayer
  * @author  MDOLEZ
  */
-class HttpResponse implements HttpResponseInterface
+class HttpResponse extends AppComponent implements HttpResponseInterface
 {
     /**
      * @var Page $page the page assigned to the response.
      */
     protected $page;
+
+    /**
+     * Adds a new specific header to the response
+     *
+     * @param string $header The header to add.
+     */
+    public function addHeader(string $header)
+    {
+        $header($header);
+    }
+
+    /**
+     * Redirects the user to a new location
+     *
+     * @param string $location The new location.
+     */
+    public function redirect(string $location)
+    {
+        header('Location: '.$location);
+        exit(0);
+    }
+
+    /**
+     * Redirects to a 404 error page
+     */
+    public function redirectPageNotFound()
+    {
+
+    }
+
+    /**
+     * Sends the response while rendering the page
+     */
+    public function send()
+    {
+        exit($this->page->renderPage());
+    }
+
+    /**
+     * Assign a page to the response
+     *
+     * @param Page $page
+     */
+    public function setPage(Page $page)
+    {
+        $this->page = $page;
+    }
+
+    /**
+     * Adds a cookie
+     *
+     * @param string $name
+     * @param string $value
+     * @param int $expire
+     * @param string|null $path
+     * @param string|null $domain
+     * @param bool $secure
+     * @param bool $httpOnly
+     */
+    public function setCookie(
+        string $name,
+        string $value = '',
+        int $expire = 0,
+        string $path = null,
+        string $domain = null,
+        bool $secure = false,
+        bool $httpOnly = true
+    )
+    {
+        setCookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+    }
+
+
 }
